@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+GITHUB_OAUTH_SETUP.md
+GITHUB_OAUTH_TROUBLESHOOTING.md
+.gitignore
