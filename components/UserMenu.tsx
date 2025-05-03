@@ -47,7 +47,7 @@ export function UserMenu() {
     return (
       <Button 
         variant='outline' 
-        className='ml-4'
+        className='ml-2'
         onClick={() => signIn("github", { callbackUrl: "/" })}
       >
         <FaGithub className="mr-2" />
@@ -149,7 +149,7 @@ export function UserMenu() {
   return (
     <div className="relative">
       <div className="flex items-center gap-4">
-        <div className="flex flex-col">
+        <div className="hidden md:flex flex-col items-start">
           <span className="text-sm font-medium dark:text-white">{session?.user?.name}</span>
           <span className="text-xs text-gray-500 dark:text-neutral-400">{session?.user?.email}</span>
         </div>
@@ -158,7 +158,7 @@ export function UserMenu() {
             <img 
               src={session?.user?.image || "https://github.com/ghost.png"} 
               alt={session?.user?.name || "User"} 
-              className="h-10 w-10 rounded-full ring-2 ring-gray-200 hover:ring-gray-300 dark:ring-neutral-700 dark:hover:ring-neutral-600 transition-all cursor-pointer"
+              className="h-10 w-10 min-h-8 min-w-10 rounded-full ring-2 ring-gray-200 hover:ring-gray-300 dark:ring-neutral-700 dark:hover:ring-neutral-600 transition-all cursor-pointer"
             />
           </PopoverTrigger>
           <PopoverContent className="w-56 p-0 dark:bg-neutral-900 dark:border-neutral-800">
