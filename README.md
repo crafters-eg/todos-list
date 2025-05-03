@@ -66,6 +66,6 @@ Deploy your Tomados instance on [Vercel](https://vercel.com) for the best experi
 
 Need a team for your next project? Contact us:
 
-- iVortexx: [Contact](https://github.com/iVortexx)
-- Wolf: [Contact](https://github.com/Wolf)
+- iVortexx: momorwe@gmail.com
+- Wolf: blackwolf3466@gmail.com
 
