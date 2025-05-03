@@ -32,7 +32,7 @@ Tomados is a sleek, intuitive task management application built with Next.js. It
 1. Clone the repository
 ```bash
 git clone https://github.com/iyousefosama/todos-list.git
-cd tomados
+cd todos-list
 ```
 
 2. Install dependencies
