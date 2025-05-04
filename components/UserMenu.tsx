@@ -167,7 +167,7 @@ export function UserMenu() {
                 onClick={() => {
                   setShowSettingsPopup(true);
                 }}
-                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 hover:cursor-pointer"
               >
                 <IoSettingsOutline className="mr-2" />
                 Settings
@@ -176,7 +176,7 @@ export function UserMenu() {
                 onClick={() => {
                   signOut({ callbackUrl: "/" });
                 }}
-                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800 hover:cursor-pointer"
               >
                 <LuLogOut className="mr-2" />
                 Sign out

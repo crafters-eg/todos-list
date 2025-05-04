@@ -31,7 +31,7 @@ Tomados is a sleek, intuitive task management application built with Next.js. It
 
 1. Clone the repository
 ```bash
-git clone https://github.com/iyousefosama/todos-list.git
+git clone https://github.com/crafters-eg/todos-list
 cd todos-list
 ```
 
@@ -60,7 +60,7 @@ Deploy your Tomados instance on [Vercel](https://vercel.com) for the best experi
 ## 🤝 Contributors
 
 - **iVortexx** - [GitHub](https://github.com/iVortexx)
-- **Wolf** - [GitHub](https://github.com/Wolf)
+- **Wolf** - [GitHub](https://github.com/iyousefosama)
 
 ## 📞 Contact
 

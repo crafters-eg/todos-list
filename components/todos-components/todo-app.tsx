@@ -537,7 +537,7 @@ export default function TodoApp() {
             onDrop={(e) => handleDrop('inProgress', e)}
             className="min-h-[200px] transition-colors duration-75 relative"
           >
-            <h2 className="text-xl font-semibold mb-4 dark:text-white transition-colors duration-200">
+            <h2 className="text-xl font-semibold mb-4 dark:text-white transition-colors duration-200 m-5">
               In Progress ({inProgressTodos.length})
             </h2>
             {dragOverColumn === 'inProgress' && (
@@ -554,7 +554,7 @@ export default function TodoApp() {
             onDrop={(e) => handleDrop('done', e)}
             className="min-h-[200px] transition-colors duration-75 relative"
           >
-            <h2 className="text-xl font-semibold mb-4 dark:text-white transition-colors duration-200">
+            <h2 className="text-xl font-semibold mb-4 dark:text-white transition-colors duration-200 m-5">
               Done ({completedTodos.length})
             </h2>
             {dragOverColumn === 'done' && (

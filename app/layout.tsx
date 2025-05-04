@@ -18,6 +18,23 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Tomados",
   description: "A modern task management application",
+  keywords: ["task management", "productivity", "todo", "tomados"],
+  authors: [{ name: "Tomados" }],
+  twitter: {
+    card: "summary_large_image",
+    title: "Tomados",
+    description: "A modern task management application",
+    images: "https://i.imgur.com/LjGwNJv.jpeg",
+  },
+  openGraph: {
+    title: "Tomados",
+    description: "A modern task management application",
+    url: "https://tomados.vercel.app",
+    images: "https://i.imgur.com/LjGwNJv.jpeg",
+    siteName: "Tomados",
+    locale: "en_US",
+    type: "website",
+  },
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
