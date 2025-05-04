@@ -30,7 +30,7 @@ const Navbar = () => {
                     />
                     Tomados
                 </Button>
-                <ul className='flex justify-between md:justify-end w-full space-x-4 items-center mt-5 px-10'>
+                <ul className='flex justify-between md:justify-end w-full space-x-4 items-center mt-5 px-2'>
                     <div className='flex space-x-4'>
                         <li>
                             <Link href={'/'}>
