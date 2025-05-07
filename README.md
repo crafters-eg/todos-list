@@ -5,6 +5,9 @@
   <p>Your modern and minimal task management application</p>
 </div>
 
+![Homepage](https://github.com/user-attachments/assets/956bd2bc-1af3-46b3-84e3-0b37ed4ba554)
+![Todos-list](https://github.com/user-attachments/assets/8d1cf32e-604a-4aa9-a4ee-0d30db956014)
+
 ## 🚀 Overview
 
 Tomados is a sleek, intuitive task management application built with Next.js. It helps you organize tasks, stay focused, and boost productivity with a clean, modern interface.
