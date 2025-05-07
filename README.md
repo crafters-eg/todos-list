@@ -4,6 +4,9 @@
   <h1>📝 Tomados</h1>
   <p>Your modern and minimal task management application</p>
 </div>
+![Homepage](https://github.com/user-attachments/assets/fddca146-fed8-413b-885c-f449351a956e)
+![Todos-list](https://github.com/user-attachments/assets/a01e4d4f-b8fb-4267-a625-2a1bea053f67)
+
 
 ## 🚀 Overview
 
