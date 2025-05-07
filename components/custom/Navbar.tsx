@@ -1,25 +1,46 @@
 "use client";
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button';
 import { FaGithub } from "react-icons/fa";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserMenu } from '../UserMenu';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const Navbar = () => {
+    const [scrolled, setScrolled] = useState(false)
     const pathname = usePathname();
     const isHome = pathname === '/';
     const isTodos = pathname === '/todos';
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 20) {
+                setScrolled(true)
+            } else {
+                setScrolled(false)
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll)
+        return () => {
+            window.removeEventListener("scroll", handleScroll)
+        }
+    }, [])
+
     return (
-        <nav className={`z-50 ${isHome ?
-            'fixed top-4 left-1/2 w-full md:w-3/4 transform -translate-x-1/2 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm' :
-            'relative top-0 bg-white dark:bg-neutral-950 shadow-md'} 
-            p-4 transition-colors duration-200`}
+        <nav
+            className={cn(
+                "fixed top-0 left-0 w-full z-50 p-4 transition-colors duration-500 ease-in-out backdrop-blur-sm",
+                isHome && !scrolled
+                    ? "bg-white/80 dark:bg-neutral-950/80 md:w-3/4 md:left-1/2 md:transform md:-translate-x-1/2 top-4"
+                    : "bg-white dark:bg-neutral-950 shadow-md",
+                scrolled && "bg-white/90 dark:bg-neutral-950/90 shadow-md"
+            )}
         >
-            <div className='container mx-auto flex flex-col md:flex-row justify-between items-center'>
+            <div className="container mx-auto flex flex-col md:flex-row justify-between items-center transition-all duration-500 ease-in-out">
                 <Button variant={'ghost'} className='text-2xl md:text-xl font-semibold md:font-bold dark:text-white'>
                     <Image
                         src="/favicon.ico"

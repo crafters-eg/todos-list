@@ -14,7 +14,7 @@ const TodosPage = () => {
   const { data: session, status } = useSession();
 
   return (
-    <div className="relative w-full bg-white dark:bg-neutral-950 text-black dark:text-white transition-colors duration-200">
+    <div className="relative w-full bg-white dark:bg-neutral-950 text-black dark:text-white transition-colors duration-200 py-32 md:py-24">
       {/* Background gradient effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-pink-400 opacity-10 blur-3xl filter dark:bg-purple-600 dark:opacity-10"></div>
