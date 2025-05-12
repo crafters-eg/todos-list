@@ -12,6 +12,8 @@ import { Card } from "./ui/card";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { createPortal } from "react-dom";
 import { useTheme } from "./providers/ThemeProvider";
+import { FiLogIn } from "react-icons/fi";
+import Link from "next/link";
 
 export function UserMenu() {
   const { data: session, status } = useSession();
@@ -33,7 +35,7 @@ export function UserMenu() {
     } else {
       document.body.style.overflow = '';
     }
-    
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -45,14 +47,15 @@ export function UserMenu() {
 
   if (status === "unauthenticated") {
     return (
-      <Button 
-        variant='outline' 
-        className='ml-2'
-        onClick={() => signIn("github", { callbackUrl: "/" })}
-      >
-        <FaGithub className="mr-2" />
-        Login
-      </Button>
+      <Link href="/auth/signin">
+        <Button
+          variant='outline'
+          className='ml-2'
+        >
+          <FiLogIn />
+          Login
+        </Button>
+      </Link>
     );
   }
 
@@ -63,8 +66,8 @@ export function UserMenu() {
   // Modal component
   const SettingsModal = () => {
     return (
-      <div 
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]" 
+      <div
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             setShowSettingsPopup(false);
@@ -86,7 +89,7 @@ export function UserMenu() {
         <Card className="w-[400px] max-w-[90vw] p-6 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm rounded-lg shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold dark:text-white">Settings</h2>
-            <button 
+            <button
               onClick={() => setShowSettingsPopup(false)}
               className="text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200"
             >
@@ -97,7 +100,7 @@ export function UserMenu() {
             <div>
               <h3 className="font-medium mb-2 dark:text-white">Profile</h3>
               <div className="flex items-center gap-3 mb-2">
-                <img 
+                <img
                   src={session?.user?.image || "https://github.com/ghost.png"}
                   alt={session?.user?.name || "User"}
                   className="h-12 w-12 rounded-full"
@@ -112,29 +115,27 @@ export function UserMenu() {
               <h3 className="font-medium mb-2 dark:text-white">Appearance</h3>
               <div className="flex items-center justify-between p-3 rounded-md border dark:border-neutral-700">
                 <div className="flex items-center gap-2">
-                  {isDarkMode ? 
-                    <MdDarkMode className="text-xl text-indigo-500" /> : 
+                  {isDarkMode ?
+                    <MdDarkMode className="text-xl text-indigo-500" /> :
                     <MdLightMode className="text-xl text-amber-500" />
                   }
                   <span className="text-sm font-medium dark:text-white">
                     {isDarkMode ? "Dark Mode" : "Light Mode"}
                   </span>
                 </div>
-                <div 
+                <div
                   onClick={toggleTheme}
                   className="relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer"
                 >
-                  <span className={`${
-                    isDarkMode ? "bg-indigo-600" : "bg-gray-300"
-                  } absolute h-6 w-11 rounded-full transition-colors`} />
-                  <span className={`${
-                    isDarkMode ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`} />
+                  <span className={`${isDarkMode ? "bg-indigo-600" : "bg-gray-300"
+                    } absolute h-6 w-11 rounded-full transition-colors`} />
+                  <span className={`${isDarkMode ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`} />
                 </div>
               </div>
             </div>
             <div className="pt-4 flex justify-end">
-              <Button 
+              <Button
                 onClick={() => setShowSettingsPopup(false)}
               >
                 Close
@@ -155,9 +156,9 @@ export function UserMenu() {
         </div>
         <Popover>
           <PopoverTrigger>
-            <img 
-              src={session?.user?.image || "https://github.com/ghost.png"} 
-              alt={session?.user?.name || "User"} 
+            <img
+              src={session?.user?.image || "https://github.com/ghost.png"}
+              alt={session?.user?.name || "User"}
               className="h-10 w-10 min-h-8 min-w-10 rounded-full ring-2 ring-gray-200 hover:ring-gray-300 dark:ring-neutral-700 dark:hover:ring-neutral-600 transition-all cursor-pointer"
             />
           </PopoverTrigger>

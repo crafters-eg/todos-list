@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { FaGoogle } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 function SignInContent() {
   const searchParams = useSearchParams();
@@ -31,9 +33,11 @@ function SignInContent() {
         </div>
         <div className="mt-8">
           <div className="space-y-4">
-            <button
-              onClick={() => signIn("github", { callbackUrl: "/" })}
-              className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+            <Button
+              onClick={() => signIn("github", { callbackUrl: "/todos" })}
+              variant={"outline"}
+              className="flex items-center justify-center w-full hover:cursor-pointer"
+              size="lg"
             >
               <svg
                 className="h-5 w-5 mr-2"
@@ -47,7 +51,16 @@ function SignInContent() {
                 />
               </svg>
               Sign in with GitHub
-            </button>
+            </Button>
+            <Button
+              onClick={() => signIn("google", { callbackUrl: "/todos" })}
+              variant={"outline"}
+              className="flex items-center justify-center w-full hover:cursor-pointer"
+              size="lg"
+            >
+              <FaGoogle className="h-5 w-5 mr-2" />
+              Sign in with Google
+            </Button>
           </div>
         </div>
       </div>
