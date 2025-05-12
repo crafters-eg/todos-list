@@ -401,7 +401,7 @@ export default function TodoApp() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-center">
         <h1 className="text-2xl font-bold">Tomados Dashboard</h1>
         {session?.user?.name && (
           <p className="text-sm text-gray-500">
