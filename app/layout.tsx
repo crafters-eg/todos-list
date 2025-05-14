@@ -18,7 +18,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Tomados todo app",
   description: "Free and open-source modern task management application built with Next.js, TypeScript, and Tailwind CSS. Tomados helps you stay organized, focused, and productive.",
-  keywords: ["task management", "productivity", "todo", "tomados"],
+  keywords: [
+    "task management app",
+    "todo list app",
+    "open source productivity app",
+    "Next.js todo app",
+    "task tracker",
+    "daily planner app",
+    "free task manager",
+    "modern todo app",
+    "task organizer",
+    "project management app",
+    "Tomados app"
+  ],
   authors: [{ name: "iyousefosama", url: "https://github.com/iyousefosama" }, { name: "iVortexx", url: "https://github.com/iVortexx" }],
   twitter: {
     card: "summary",
