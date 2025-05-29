@@ -34,7 +34,7 @@ Tomados is a sleek, intuitive task management application built with Next.js. It
 
 1. Clone the repository
 ```bash
-git clone https://github.com/crafters-eg/todos-list
+git clone https://github.com/mishcoders/todos-list
 cd todos-list
 ```
 
@@ -44,7 +44,7 @@ npm install
 ```
 
 3. Set up environment variables
-   - Create a `.env.local` file based on `.env.example`
+   - Create a `.env` file based on `.example.env`
    - Configure your MongoDB connection and auth providers
 
 4. Run the development server
@@ -52,7 +52,7 @@ npm install
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+1. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## 🌐 Deployment
 

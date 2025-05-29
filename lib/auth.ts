@@ -1,5 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import DiscordProvider from "next-auth/providers/discord";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -8,15 +10,39 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET as string,
       authorization: {
         params: {
-          scope: 'read:user user:email',
+          scope: "read:user user:email",
         },
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
+      profile(profile) {
+        const cleanedImage = profile.picture?.split("=")[0]; // Remove anything after '='
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: cleanedImage,
+        };
+      },
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID as string,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
     }),
   ],
   // You can add custom pages for sign in, sign out, etc.
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/signin', // Error code passed in query string as ?error=
+    signIn: "/auth/signin",
+    error: "/auth/signin", // Error code passed in query string as ?error=
   },
   callbacks: {
     async session({ session, token }: any) {
@@ -36,4 +62,4 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // Enable debug logs
-}; 
+};

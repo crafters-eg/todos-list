@@ -401,7 +401,7 @@ export default function TodoApp() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-center">
         <h1 className="text-2xl font-bold">Tomados Dashboard</h1>
         {session?.user?.name && (
           <p className="text-sm text-gray-500">
@@ -410,20 +410,20 @@ export default function TodoApp() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-4 dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card className="p-4 flex flex-col items-center dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Tasks</h3>
           <p className="text-2xl font-bold mt-1">{totalTodos}</p>
         </Card>
-        <Card className="p-4 dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
+        <Card className="p-4 flex flex-col items-center dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Completion Rate</h3>
           <p className="text-2xl font-bold mt-1">{completionRate}%</p>
         </Card>
-        <Card className="p-4 dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
+        <Card className="p-4 flex flex-col items-center dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">High Priority</h3>
           <p className="text-2xl font-bold mt-1 text-red-500">{highPriorityCount}</p>
         </Card>
-        <Card className="p-4 dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
+        <Card className="p-4 flex flex-col items-center dark:bg-neutral-900 dark:border-neutral-800 transition-colors duration-200">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Due Soon</h3>
           <p className="text-2xl font-bold mt-1 text-yellow-500">{dueSoonCount}</p>
         </Card>
