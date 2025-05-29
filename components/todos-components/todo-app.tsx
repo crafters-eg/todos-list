@@ -16,6 +16,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { format } from "date-fns"
 import { Tooltip } from "@/components/ui/tooltip"
+import ContextMenu from "./context-menu"
+import ShareModal from "./share-modal"
 
 export type Todo = {
   id: string
@@ -40,6 +42,24 @@ export default function TodoApp() {
   const [showFilters, setShowFilters] = useState(false)
   const [draggedTodo, setDraggedTodo] = useState<Todo | null>(null)
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null)
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    todoId: string;
+  } | null>(null);
+
+  // Share modal state
+  const [shareModal, setShareModal] = useState<{
+    isOpen: boolean;
+    todoId: string;
+    todoTitle: string;
+  }>({
+    isOpen: false,
+    todoId: '',
+    todoTitle: '',
+  });
 
   useEffect(() => {
     const getTodos = async () => {
@@ -92,7 +112,7 @@ export default function TodoApp() {
       if (!todo) return
 
       const updatedTodo = await updateTodo(id, { completed: !todo.completed })
-      
+
       setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)))
     } catch (error) {
       console.error("Failed to update todo:", error)
@@ -124,15 +144,15 @@ export default function TodoApp() {
 
   const filterTodos = (todosList: Todo[]) => {
     return todosList.filter(todo => {
-      const matchesSearch = 
-        searchQuery === "" || 
+      const matchesSearch =
+        searchQuery === "" ||
         todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         todo.description.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesPriority = 
-        filterPriority.length === 0 || 
+
+      const matchesPriority =
+        filterPriority.length === 0 ||
         filterPriority.includes(todo.priority);
-      
+
       return matchesSearch && matchesPriority;
     });
   };
@@ -155,8 +175,8 @@ export default function TodoApp() {
   const completedTodos = filteredTodos.filter((todo) => todo.completed);
 
   const totalTodos = todos.length;
-  const completionRate = totalTodos > 0 
-    ? Math.round((todos.filter(t => t.completed).length / totalTodos) * 100) 
+  const completionRate = totalTodos > 0
+    ? Math.round((todos.filter(t => t.completed).length / totalTodos) * 100)
     : 0;
   const highPriorityCount = todos.filter(t => t.priority === "high" && !t.completed).length;
   const dueSoonCount = todos.filter(t => {
@@ -198,9 +218,9 @@ export default function TodoApp() {
 
   const getDueDateStatus = (dueDate: Date, completed: boolean) => {
     if (completed) return { text: "Completed", className: "text-green-500" };
-    
+
     const daysRemaining = getDaysRemaining(dueDate);
-    
+
     if (daysRemaining < 0) {
       return { text: "Overdue", className: "text-red-500 font-medium" };
     } else if (daysRemaining === 0) {
@@ -235,13 +255,13 @@ export default function TodoApp() {
     if (isMovingToCompleted || isMovingToInProgress) {
       try {
         const newCompleted = columnId === 'done';
-        
+
         const updatedTodo = await updateTodo(draggedTodo.id, { completed: newCompleted });
-        
-        setTodos(todos.map(todo => 
+
+        setTodos(todos.map(todo =>
           todo.id === draggedTodo.id ? updatedTodo : todo
         ));
-        
+
         toast({
           title: "Success",
           description: `Task moved to ${newCompleted ? 'Done' : 'In Progress'}`,
@@ -264,6 +284,42 @@ export default function TodoApp() {
     setDragOverColumn(null);
   };
 
+  // Handle right-click context menu
+  const handleContextMenu = (e: React.MouseEvent, todoId: string) => {
+    e.preventDefault();
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      todoId,
+    });
+  };
+
+  // Handle share action
+  const handleShare = (todoId: string) => {
+    const todo = todos.find(t => t.id === todoId);
+    if (todo) {
+      setShareModal({
+        isOpen: true,
+        todoId,
+        todoTitle: todo.title,
+      });
+    }
+  };
+
+  // Close context menu
+  const closeContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  // Close share modal
+  const closeShareModal = () => {
+    setShareModal({
+      isOpen: false,
+      todoId: '',
+      todoTitle: '',
+    });
+  };
+
   if (status === "loading") {
     return (
       <div className="flex justify-center py-20">
@@ -276,8 +332,8 @@ export default function TodoApp() {
     return (
       <div className="flex flex-col items-center justify-center py-10 space-y-4">
         <h2 className="text-xl font-semibold">Please sign in to manage your tasks</h2>
-        <Button 
-          onClick={() => window.location.href = "/api/auth/signin"} 
+        <Button
+          onClick={() => window.location.href = "/api/auth/signin"}
           className="mt-4"
         >
           Sign In
@@ -291,7 +347,7 @@ export default function TodoApp() {
       if (todo.completed) {
         return { color: "bg-green-500", icon: <CheckCircle className="h-4 w-4 text-white" /> };
       }
-      
+
       const daysRemaining = getDaysRemaining(todo.date);
       if (daysRemaining < 0) {
         return { color: "bg-red-500", icon: <Clock className="h-4 w-4 text-white" /> };
@@ -313,7 +369,7 @@ export default function TodoApp() {
         onDragEnd={handleDragEnd}
         className="mb-4 cursor-grab active:cursor-grabbing transition-transform duration-100 hover:-translate-y-1"
       >
-        <Card 
+        <Card
           className={`overflow-hidden border-l-4 dark:bg-neutral-900/95 backdrop-blur-sm dark:border-neutral-800 transition-all duration-100 hover:shadow-lg group ${
             draggedTodo?.id === todo.id ? 'opacity-60 scale-105' : ''
           } ${
@@ -322,6 +378,7 @@ export default function TodoApp() {
             todo.completed && dragOverColumn === 'inProgress' && draggedTodo?.id === todo.id ? 'border-l-blue-400' : ''
           }`}
           style={{ borderLeftColor: todo.color }}
+          onContextMenu={(e) => handleContextMenu(e, todo.id)}
         >
           <div className="relative pt-2">
             <CardHeader className="p-4 pt-1 pb-2">
@@ -336,12 +393,12 @@ export default function TodoApp() {
                     {todo.title}
                   </h3>
                 </div>
-                
+
                 <div className={`${statusIndicator.color} p-1.5 rounded-full shadow-sm flex-shrink-0`}>
                   {statusIndicator.icon}
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap items-center gap-2 mt-1">
                 <div className="flex items-center text-xs font-medium py-1 px-2 rounded-md bg-gray-100 dark:bg-neutral-800">
                   <CalendarIcon className="h-3.5 w-3.5 mr-1.5 text-gray-500 dark:text-gray-400" />
@@ -349,13 +406,13 @@ export default function TodoApp() {
                     {dueDateStatus.text} • {format(new Date(todo.date), "MMM d")}
                   </span>
                 </div>
-                
+
                 <Badge className={`flex-shrink-0 ${getPriorityColor(todo.priority)} shadow-sm transition-transform group-hover:scale-110`}>
                   {todo.priority}
                 </Badge>
               </div>
             </CardHeader>
-            
+
             {todo.description && (
               <CardContent className="px-4 py-2">
                 <p className={`text-sm ${todo.completed ? "line-through text-gray-500 dark:text-neutral-400" : "dark:text-neutral-300"}`}>
@@ -363,7 +420,7 @@ export default function TodoApp() {
                 </p>
               </CardContent>
             )}
-            
+
             <CardFooter className="p-3 flex justify-end items-center gap-2 bg-gray-50 dark:bg-neutral-800/30">
               <Tooltip content={todo.completed ? "Mark as incomplete" : "Mark as complete"}>
                 <Button
@@ -371,22 +428,22 @@ export default function TodoApp() {
                   size="sm"
                   onClick={() => handleToggleTodoStatus(todo.id)}
                   className={`h-8 px-3 border-dashed transition-all hover:border-solid ${
-                    todo.completed ? 
-                    "text-green-600 dark:text-green-400 border-green-200 dark:border-green-900 hover:bg-green-50 dark:hover:bg-green-900/20" : 
+                    todo.completed ?
+                    "text-green-600 dark:text-green-400 border-green-200 dark:border-green-900 hover:bg-green-50 dark:hover:bg-green-900/20" :
                     "border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-800"
                   }`}
                 >
-                  {todo.completed ? 
-                    <><CheckCircle className="h-4 w-4 mr-1.5" /> Completed</> : 
+                  {todo.completed ?
+                    <><CheckCircle className="h-4 w-4 mr-1.5" /> Completed</> :
                     <><Circle className="h-4 w-4 mr-1.5" /> Complete</>
                   }
                 </Button>
               </Tooltip>
               <Tooltip content="Delete task">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="icon"
-                  onClick={() => handleDeleteTodo(todo.id)} 
+                  onClick={() => handleDeleteTodo(todo.id)}
                   className="h-8 w-8 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -449,17 +506,17 @@ export default function TodoApp() {
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           {searchQuery && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5" 
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5"
               onClick={() => setSearchQuery("")}
             >
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
-        
+
         <div className="flex gap-3">
           <Select value={sortBy} onValueChange={(value: "date" | "priority" | "createdAt") => setSortBy(value)}>
             <SelectTrigger className="w-[150px] dark:bg-neutral-900">
@@ -486,34 +543,34 @@ export default function TodoApp() {
               <h4 className="font-medium mb-3">Filter by Priority</h4>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="filter-high" 
-                    checked={filterPriority.includes("high")} 
+                  <Checkbox
+                    id="filter-high"
+                    checked={filterPriority.includes("high")}
                     onCheckedChange={() => togglePriorityFilter("high")}
                   />
                   <Label htmlFor="filter-high" className="cursor-pointer">High</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="filter-medium" 
-                    checked={filterPriority.includes("medium")} 
+                  <Checkbox
+                    id="filter-medium"
+                    checked={filterPriority.includes("medium")}
                     onCheckedChange={() => togglePriorityFilter("medium")}
                   />
                   <Label htmlFor="filter-medium" className="cursor-pointer">Medium</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="filter-low" 
-                    checked={filterPriority.includes("low")} 
+                  <Checkbox
+                    id="filter-low"
+                    checked={filterPriority.includes("low")}
                     onCheckedChange={() => togglePriorityFilter("low")}
                   />
                   <Label htmlFor="filter-low" className="cursor-pointer">Low</Label>
                 </div>
               </div>
               <div className="flex justify-between mt-4">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setFilterPriority([])}
                   disabled={filterPriority.length === 0}
                 >
@@ -541,7 +598,7 @@ export default function TodoApp() {
               In Progress ({inProgressTodos.length})
             </h2>
             {dragOverColumn === 'inProgress' && (
-              <div className="absolute inset-0 bg-blue-50 dark:bg-blue-900/10 rounded-lg pointer-events-none" 
+              <div className="absolute inset-0 bg-blue-50 dark:bg-blue-900/10 rounded-lg pointer-events-none"
                 style={{ zIndex: -1 }}></div>
             )}
             <div className="min-h-[200px] p-2">
@@ -558,7 +615,7 @@ export default function TodoApp() {
               Done ({completedTodos.length})
             </h2>
             {dragOverColumn === 'done' && (
-              <div className="absolute inset-0 bg-green-50 dark:bg-green-900/10 rounded-lg pointer-events-none" 
+              <div className="absolute inset-0 bg-green-50 dark:bg-green-900/10 rounded-lg pointer-events-none"
                 style={{ zIndex: -1 }}></div>
             )}
             <div className="min-h-[200px] p-2">
@@ -567,6 +624,24 @@ export default function TodoApp() {
           </div>
         </div>
       )}
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onShare={() => handleShare(contextMenu.todoId)}
+          onClose={closeContextMenu}
+        />
+      )}
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={closeShareModal}
+        todoId={shareModal.todoId}
+        todoTitle={shareModal.todoTitle}
+      />
     </div>
   )
 }
