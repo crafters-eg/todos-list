@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
     const { token } = await params;
     await connectToDatabase();
 
-    const shareToken = await ShareToken.findOne({ token }).lean();
+    const shareToken = await ShareToken.findOne({ token }).lean() as any;
 
     if (!shareToken) {
       return NextResponse.json(
@@ -28,8 +28,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
     try {
       const session = await getServerSession(authOptions);
       if (session?.user?.id) {
+        const userId = session.user.id;
         hasAlreadyImported = shareToken.usedBy?.some(
-          (usage: any) => usage.userId === session.user.id
+          (usage: any) => usage.userId === userId
         ) || false;
       }
     } catch (sessionError) {
@@ -61,17 +62,18 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ to
     const session = await getServerSession(authOptions);
 
     // Check if user is authenticated
-    if (!session || !session.user) {
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
+    const userId = session.user.id;
     const { token } = await params;
     await connectToDatabase();
 
-    const shareToken = await ShareToken.findOne({ token }).lean();
+    const shareToken = await ShareToken.findOne({ token }).lean() as any;
 
     if (!shareToken) {
       return NextResponse.json(
@@ -89,7 +91,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ to
     }
 
     // Check if user is trying to import their own todo
-    if (shareToken.sharedBy === session.user.id) {
+    if (shareToken.sharedBy === userId) {
       return NextResponse.json(
         { error: 'You cannot import your own shared todo' },
         { status: 400 }
@@ -98,7 +100,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ to
 
     // Check if user has already imported this todo
     const hasAlreadyImported = shareToken.usedBy?.some(
-      (usage: any) => usage.userId === session.user.id
+      (usage: any) => usage.userId === userId
     );
 
     if (hasAlreadyImported) {
@@ -116,7 +118,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ to
       date: shareToken.todoData.date,
       priority: shareToken.todoData.priority,
       completed: false,
-      userId: session.user.id,
+      userId: userId,
     });
 
     // Update the share token to track usage
@@ -125,7 +127,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ to
       {
         $push: {
           usedBy: {
-            userId: session.user.id,
+            userId: userId,
             usedAt: new Date(),
           }
         }

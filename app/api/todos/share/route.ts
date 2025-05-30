@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const todo = await Todo.findOne({
       _id: todoId,
       userId: session.user.id
-    }).lean();
+    }).lean() as any;
 
     if (!todo) {
       return NextResponse.json(
