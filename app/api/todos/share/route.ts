@@ -65,8 +65,11 @@ export async function POST(req: NextRequest) {
       expiresAt,
     });
 
-    // Generate the share URL
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    // Generate the share URL - dynamically detect the base URL
+    const host = req.headers.get('host');
+    const protocol = req.headers.get('x-forwarded-proto') ||
+                    (req.headers.get('host')?.includes('localhost') ? 'http' : 'https');
+    const baseUrl = process.env.NEXTAUTH_URL || `${protocol}://${host}`;
     const shareUrl = `${baseUrl}/shared/${token}`;
 
     return NextResponse.json({
