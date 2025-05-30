@@ -9,6 +9,8 @@ import { Tooltip } from "@/components/ui/tooltip"
 import type { Todo } from "./todo-app"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
+import ContextMenu from "./context-menu"
+import ShareModal from "./share-modal"
 
 type TodoListProps = {
   todos: Todo[]
@@ -20,6 +22,24 @@ type TodoListProps = {
 export default function TodoList({ todos, onToggle, onDelete, isDraggable = false }: TodoListProps) {
   // Track hover state for each card
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    todoId: string;
+  } | null>(null);
+
+  // Share modal state
+  const [shareModal, setShareModal] = useState<{
+    isOpen: boolean;
+    todoId: string;
+    todoTitle: string;
+  }>({
+    isOpen: false,
+    todoId: '',
+    todoTitle: '',
+  });
 
   if (todos.length === 0) {
     return <div className="text-center p-8 border border-dashed rounded-lg text-gray-500 dark:text-neutral-400 dark:border-neutral-700 transition-colors duration-200">No tasks found</div>
@@ -50,9 +70,9 @@ export default function TodoList({ todos, onToggle, onDelete, isDraggable = fals
   // Get text and style for days remaining indicator
   const getDueDateStatus = (dueDate: Date, completed: boolean) => {
     if (completed) return { text: "Completed", className: "text-green-500" };
-    
+
     const daysRemaining = getDaysRemaining(dueDate);
-    
+
     if (daysRemaining < 0) {
       return { text: "Overdue", className: "text-red-500 font-medium" };
     } else if (daysRemaining === 0) {
@@ -66,16 +86,53 @@ export default function TodoList({ todos, onToggle, onDelete, isDraggable = fals
     }
   }
 
+  // Handle right-click context menu
+  const handleContextMenu = (e: React.MouseEvent, todoId: string) => {
+    e.preventDefault();
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      todoId,
+    });
+  };
+
+  // Handle share action
+  const handleShare = (todoId: string) => {
+    const todo = todos.find(t => t.id === todoId);
+    if (todo) {
+      setShareModal({
+        isOpen: true,
+        todoId,
+        todoTitle: todo.title,
+      });
+    }
+  };
+
+  // Close context menu
+  const closeContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  // Close share modal
+  const closeShareModal = () => {
+    setShareModal({
+      isOpen: false,
+      todoId: '',
+      todoTitle: '',
+    });
+  };
+
   return (
     <div className="space-y-4">
       {todos.map((todo, index) => {
         const dueStatus = getDueDateStatus(todo.date, todo.completed);
-        
+
         const todoCard = (
-          <Card 
+          <Card
             className={`overflow-hidden dark:bg-neutral-900 dark:border-neutral-800 transition-all duration-200 hover:shadow-md ${isDraggable ? 'hover:border-blue-400 dark:hover:border-blue-500' : ''}`}
             onMouseEnter={() => setHoveredCardId(todo.id)}
             onMouseLeave={() => setHoveredCardId(null)}
+            onContextMenu={(e) => handleContextMenu(e, todo.id)}
           >
             <div className="h-2" style={{ backgroundColor: todo.color }}></div>
             <CardHeader className="p-4 pb-2 flex flex-row justify-between items-start">
@@ -115,17 +172,17 @@ export default function TodoList({ todos, onToggle, onDelete, isDraggable = fals
                     onClick={() => onToggle(todo.id)}
                     className={`size-8 dark:hover:bg-neutral-800 transition-all ${hoveredCardId === todo.id ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
                   >
-                    {todo.completed ? 
-                      <CheckCircle className="h-5 w-5 text-green-500" /> : 
+                    {todo.completed ?
+                      <CheckCircle className="h-5 w-5 text-green-500" /> :
                       <Circle className="h-5 w-5 dark:text-neutral-300" />
                     }
                   </Button>
                 </Tooltip>
                 <Tooltip content="Delete task">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => onDelete(todo.id)} 
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDelete(todo.id)}
                     className={`size-8 dark:hover:bg-neutral-800 transition-all ${hoveredCardId === todo.id ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
                   >
                     <Trash2 className="h-5 w-5 text-red-500" />
@@ -135,7 +192,7 @@ export default function TodoList({ todos, onToggle, onDelete, isDraggable = fals
             </CardFooter>
           </Card>
         );
-        
+
         if (isDraggable) {
           return (
             <Draggable key={todo.id} draggableId={todo.id} index={index} isDragDisabled={false}>
@@ -156,9 +213,27 @@ export default function TodoList({ todos, onToggle, onDelete, isDraggable = fals
             </Draggable>
           );
         }
-        
+
         return <div key={todo.id}>{todoCard}</div>;
       })}
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onShare={() => handleShare(contextMenu.todoId)}
+          onClose={closeContextMenu}
+        />
+      )}
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={closeShareModal}
+        todoId={shareModal.todoId}
+        todoTitle={shareModal.todoTitle}
+      />
     </div>
   )
 }
